@@ -10,6 +10,7 @@ class User(Base):
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
+    role = Column(String(100), nullable=False, unique=True)
     IsOwner = Column(Boolean, default=False)
 
 

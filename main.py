@@ -7,6 +7,8 @@ from datetime import timedelta
 import models
 import schemas
 from database import SessionLocal, engine, Base
+from pydantic import BaseModel
+from fastapi import Body
 from auth import (
     authenticate_user, create_access_token,
     get_current_user, hash_password
@@ -26,33 +28,49 @@ def get_db():
     finally:
         db.close()
 
+
 # --- Authentication ---
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
 
 
 @app.post("/login")
-def public_login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: Session = Depends(get_db)  # Use proper session injector
-):
-    user = authenticate_user(db, form_data.username, form_data.password)
+def login(request: LoginRequest = Body(...), db: Session = Depends(get_db)):
+    user = authenticate_user(db, request.username, request.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password"
+            detail="Invalid username or password"
         )
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=access_token_expires
+    )
+
     return {
-        "message": "Login successful",
+        "access_token": access_token,
+        "token_type": "bearer",
         "user": {
             "id": user.id,
             "username": user.username,
-            "email": user.email,  # if applicable
-            "role": user.role     # if applicable
+            "name": user.name,
+            "email": user.email
         }
     }
 
 
 @app.post("/users/", response_model=schemas.UserOut, status_code=status.HTTP_201_CREATED)
-def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def create_user(
+    user: schemas.UserCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     db_user = models.User(**user.dict())
     db_user.password = hash_password(user.password)
     db.add(db_user)
@@ -62,12 +80,19 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current
 
 
 @app.get("/users/", response_model=list[schemas.UserOut])
-def list_users(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def list_users(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     return db.query(models.User).all()
 
 
 @app.get("/users/{id}", response_model=schemas.UserOut)
-def get_user(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_user(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     user = db.query(models.User).get(id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -75,7 +100,12 @@ def get_user(id: int, db: Session = Depends(get_db), current_user: models.User =
 
 
 @app.put("/users/{id}", response_model=schemas.UserOut)
-def update_user(id: int, updated: schemas.UserCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def update_user(
+    id: int,
+    updated: schemas.UserCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     user = db.query(models.User).get(id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -88,7 +118,11 @@ def update_user(id: int, updated: schemas.UserCreate, db: Session = Depends(get_
 
 
 @app.delete("/users/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_user(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def delete_user(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     user = db.query(models.User).get(id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -99,7 +133,11 @@ def delete_user(id: int, db: Session = Depends(get_db), current_user: models.Use
 
 # ==== PARCEL TYPES ====
 @app.post("/parcel-types/", response_model=schemas.ParcelTypeOut, status_code=status.HTTP_201_CREATED)
-def create_parcel_type(pt: schemas.ParcelTypeCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def create_parcel_type(
+    pt: schemas.ParcelTypeCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = models.ParcelType(**pt.dict())
     db.add(obj)
     db.commit()
@@ -108,12 +146,19 @@ def create_parcel_type(pt: schemas.ParcelTypeCreate, db: Session = Depends(get_d
 
 
 @app.get("/parcel-types/", response_model=list[schemas.ParcelTypeOut])
-def get_parcel_types(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_parcel_types(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     return db.query(models.ParcelType).all()
 
 
 @app.get("/parcel-types/{id}", response_model=schemas.ParcelTypeOut)
-def get_parcel_type(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_parcel_type(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     pt = db.query(models.ParcelType).get(id)
     if not pt:
         raise HTTPException(status_code=404, detail="ParcelType not found")
@@ -121,7 +166,12 @@ def get_parcel_type(id: int, db: Session = Depends(get_db), current_user: models
 
 
 @app.put("/parcel-types/{id}", response_model=schemas.ParcelTypeOut)
-def update_parcel_type(id: int, updated: schemas.ParcelTypeCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def update_parcel_type(
+    id: int,
+    updated: schemas.ParcelTypeCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     pt = db.query(models.ParcelType).get(id)
     if not pt:
         raise HTTPException(status_code=404, detail="ParcelType not found")
@@ -133,7 +183,11 @@ def update_parcel_type(id: int, updated: schemas.ParcelTypeCreate, db: Session =
 
 
 @app.delete("/parcel-types/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_parcel_type(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def delete_parcel_type(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     pt = db.query(models.ParcelType).get(id)
     if not pt:
         raise HTTPException(status_code=404, detail="ParcelType not found")
@@ -144,7 +198,11 @@ def delete_parcel_type(id: int, db: Session = Depends(get_db), current_user: mod
 
 # ==== PARCELS ====
 @app.post("/parcels/", response_model=schemas.ParcelOut, status_code=status.HTTP_201_CREATED)
-def create_parcel(parcel: schemas.ParcelCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def create_parcel(
+    parcel: schemas.ParcelCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = models.Parcel(**parcel.dict())
     db.add(obj)
     db.commit()
@@ -153,12 +211,19 @@ def create_parcel(parcel: schemas.ParcelCreate, db: Session = Depends(get_db), c
 
 
 @app.get("/parcels/", response_model=list[schemas.ParcelOut])
-def list_parcels(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def list_parcels(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     return db.query(models.Parcel).all()
 
 
 @app.get("/parcels/{id}", response_model=schemas.ParcelOut)
-def get_parcel(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_parcel(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = db.query(models.Parcel).get(id)
     if not obj:
         raise HTTPException(status_code=404, detail="Parcel not found")
@@ -166,7 +231,12 @@ def get_parcel(id: int, db: Session = Depends(get_db), current_user: models.User
 
 
 @app.put("/parcels/{id}", response_model=schemas.ParcelOut)
-def update_parcel(id: int, updated: schemas.ParcelCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def update_parcel(
+    id: int,
+    updated: schemas.ParcelCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = db.query(models.Parcel).get(id)
     if not obj:
         raise HTTPException(status_code=404, detail="Parcel not found")
@@ -178,7 +248,11 @@ def update_parcel(id: int, updated: schemas.ParcelCreate, db: Session = Depends(
 
 
 @app.delete("/parcels/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_parcel(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def delete_parcel(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = db.query(models.Parcel).get(id)
     if not obj:
         raise HTTPException(status_code=404, detail="Parcel not found")
@@ -189,7 +263,11 @@ def delete_parcel(id: int, db: Session = Depends(get_db), current_user: models.U
 
 # ==== PARCEL IMAGES ====
 @app.post("/parcel-images/", response_model=schemas.ParcelImageOut, status_code=status.HTTP_201_CREATED)
-def add_image(image: schemas.ParcelImageCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def add_image(
+    image: schemas.ParcelImageCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = models.ParcelImage(**image.dict())
     db.add(obj)
     db.commit()
@@ -198,12 +276,19 @@ def add_image(image: schemas.ParcelImageCreate, db: Session = Depends(get_db), c
 
 
 @app.get("/parcel-images/", response_model=list[schemas.ParcelImageOut])
-def list_images(db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def list_images(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     return db.query(models.ParcelImage).all()
 
 
 @app.get("/parcel-images/{id}", response_model=schemas.ParcelImageOut)
-def get_image(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def get_image(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = db.query(models.ParcelImage).get(id)
     if not obj:
         raise HTTPException(status_code=404, detail="ParcelImage not found")
@@ -211,7 +296,12 @@ def get_image(id: int, db: Session = Depends(get_db), current_user: models.User 
 
 
 @app.put("/parcel-images/{id}", response_model=schemas.ParcelImageOut)
-def update_image(id: int, updated: schemas.ParcelImageCreate, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def update_image(
+    id: int,
+    updated: schemas.ParcelImageCreate,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = db.query(models.ParcelImage).get(id)
     if not obj:
         raise HTTPException(status_code=404, detail="ParcelImage not found")
@@ -223,9 +313,14 @@ def update_image(id: int, updated: schemas.ParcelImageCreate, db: Session = Depe
 
 
 @app.delete("/parcel-images/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_image(id: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+def delete_image(
+    id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user)
+):
     obj = db.query(models.ParcelImage).get(id)
     if not obj:
         raise HTTPException(status_code=404, detail="ParcelImage not found")
     db.delete(obj)
-    db.commit
+    db.commit()
+    return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content=None)

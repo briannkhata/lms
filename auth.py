@@ -47,9 +47,12 @@ def hash_password(password: str) -> str:
 def authenticate_user(db: Session, username: str, password: str) -> Optional[models.User]:
     user = db.query(models.User).filter(
         models.User.username == username).first()
-    if user and verify_password(password, user.password):
-        return user
-    return None
+    if not user:
+        return None
+    if not verify_password(password, user.password):
+        return None
+    return user
+
 
 # --- Token Creation ---
 

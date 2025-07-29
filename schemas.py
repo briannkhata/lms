@@ -7,7 +7,7 @@ class UserBase(BaseModel):
     username: str
     password: str
     email: str
-    role: str
+    role: Optional[str] = None
     IsOwner: Optional[bool] = False
 
 

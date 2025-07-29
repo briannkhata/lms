@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -15,8 +15,9 @@ from auth import (
 )
 
 # --- Initialize ---
-app = FastAPI()
+app = FastAPI(title="LMS")
 Base.metadata.create_all(bind=engine)
+router = APIRouter()  # Create router
 
 # --- DB Dependency ---
 
@@ -38,7 +39,12 @@ class LoginRequest(BaseModel):
     password: str
 
 
-@app.post("/login")
+@router.get("/")
+def index():
+    return {"message": "LMS Service is Running"}
+
+
+@router.post("/login")
 def login(request: LoginRequest = Body(...), db: Session = Depends(get_db)):
     user = authenticate_user(db, request.username, request.password)
     if not user:
@@ -48,13 +54,13 @@ def login(request: LoginRequest = Body(...), db: Session = Depends(get_db)):
         )
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
+    token = create_access_token(
         data={"sub": user.username},
         expires_delta=access_token_expires
     )
 
     return {
-        "access_token": access_token,
+        "token": token,
         "token_type": "bearer",
         "user": {
             "id": user.id,
@@ -65,7 +71,7 @@ def login(request: LoginRequest = Body(...), db: Session = Depends(get_db)):
     }
 
 
-@app.post("/users/", response_model=schemas.UserOut, status_code=status.HTTP_201_CREATED)
+@router.post("/users/", response_model=schemas.UserOut, status_code=status.HTTP_201_CREATED)
 def create_user(
     user: schemas.UserCreate,
     db: Session = Depends(get_db),
@@ -79,7 +85,7 @@ def create_user(
     return db_user
 
 
-@app.get("/users/", response_model=list[schemas.UserOut])
+@router.get("/users/", response_model=list[schemas.UserOut])
 def list_users(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
@@ -87,7 +93,7 @@ def list_users(
     return db.query(models.User).all()
 
 
-@app.get("/users/{id}", response_model=schemas.UserOut)
+@router.get("/users/{id}", response_model=schemas.UserOut)
 def get_user(
     id: int,
     db: Session = Depends(get_db),
@@ -99,7 +105,7 @@ def get_user(
     return user
 
 
-@app.put("/users/{id}", response_model=schemas.UserOut)
+@router.put("/users/{id}", response_model=schemas.UserOut)
 def update_user(
     id: int,
     updated: schemas.UserCreate,
@@ -117,7 +123,7 @@ def update_user(
     return user
 
 
-@app.delete("/users/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/users/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(
     id: int,
     db: Session = Depends(get_db),
@@ -132,7 +138,7 @@ def delete_user(
 
 
 # ==== PARCEL TYPES ====
-@app.post("/parcel-types/", response_model=schemas.ParcelTypeOut, status_code=status.HTTP_201_CREATED)
+@router.post("/parcel-types/", response_model=schemas.ParcelTypeOut, status_code=status.HTTP_201_CREATED)
 def create_parcel_type(
     pt: schemas.ParcelTypeCreate,
     db: Session = Depends(get_db),
@@ -145,7 +151,7 @@ def create_parcel_type(
     return obj
 
 
-@app.get("/parcel-types/", response_model=list[schemas.ParcelTypeOut])
+@router.get("/parcel-types/", response_model=list[schemas.ParcelTypeOut])
 def get_parcel_types(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
@@ -153,7 +159,7 @@ def get_parcel_types(
     return db.query(models.ParcelType).all()
 
 
-@app.get("/parcel-types/{id}", response_model=schemas.ParcelTypeOut)
+@router.get("/parcel-types/{id}", response_model=schemas.ParcelTypeOut)
 def get_parcel_type(
     id: int,
     db: Session = Depends(get_db),
@@ -165,7 +171,7 @@ def get_parcel_type(
     return pt
 
 
-@app.put("/parcel-types/{id}", response_model=schemas.ParcelTypeOut)
+@router.put("/parcel-types/{id}", response_model=schemas.ParcelTypeOut)
 def update_parcel_type(
     id: int,
     updated: schemas.ParcelTypeCreate,
@@ -182,7 +188,7 @@ def update_parcel_type(
     return pt
 
 
-@app.delete("/parcel-types/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/parcel-types/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_parcel_type(
     id: int,
     db: Session = Depends(get_db),
@@ -197,7 +203,7 @@ def delete_parcel_type(
 
 
 # ==== PARCELS ====
-@app.post("/parcels/", response_model=schemas.ParcelOut, status_code=status.HTTP_201_CREATED)
+@router.post("/parcels/", response_model=schemas.ParcelOut, status_code=status.HTTP_201_CREATED)
 def create_parcel(
     parcel: schemas.ParcelCreate,
     db: Session = Depends(get_db),
@@ -210,7 +216,7 @@ def create_parcel(
     return obj
 
 
-@app.get("/parcels/", response_model=list[schemas.ParcelOut])
+@router.get("/parcels/", response_model=list[schemas.ParcelOut])
 def list_parcels(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
@@ -218,7 +224,7 @@ def list_parcels(
     return db.query(models.Parcel).all()
 
 
-@app.get("/parcels/{id}", response_model=schemas.ParcelOut)
+@router.get("/parcels/{id}", response_model=schemas.ParcelOut)
 def get_parcel(
     id: int,
     db: Session = Depends(get_db),
@@ -230,7 +236,7 @@ def get_parcel(
     return obj
 
 
-@app.put("/parcels/{id}", response_model=schemas.ParcelOut)
+@router.put("/parcels/{id}", response_model=schemas.ParcelOut)
 def update_parcel(
     id: int,
     updated: schemas.ParcelCreate,
@@ -247,7 +253,7 @@ def update_parcel(
     return obj
 
 
-@app.delete("/parcels/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/parcels/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_parcel(
     id: int,
     db: Session = Depends(get_db),
@@ -262,7 +268,7 @@ def delete_parcel(
 
 
 # ==== PARCEL IMAGES ====
-@app.post("/parcel-images/", response_model=schemas.ParcelImageOut, status_code=status.HTTP_201_CREATED)
+@router.post("/parcel-images/", response_model=schemas.ParcelImageOut, status_code=status.HTTP_201_CREATED)
 def add_image(
     image: schemas.ParcelImageCreate,
     db: Session = Depends(get_db),
@@ -275,7 +281,7 @@ def add_image(
     return obj
 
 
-@app.get("/parcel-images/", response_model=list[schemas.ParcelImageOut])
+@router.get("/parcel-images/", response_model=list[schemas.ParcelImageOut])
 def list_images(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
@@ -283,7 +289,7 @@ def list_images(
     return db.query(models.ParcelImage).all()
 
 
-@app.get("/parcel-images/{id}", response_model=schemas.ParcelImageOut)
+@router.get("/parcel-images/{id}", response_model=schemas.ParcelImageOut)
 def get_image(
     id: int,
     db: Session = Depends(get_db),
@@ -295,7 +301,7 @@ def get_image(
     return obj
 
 
-@app.put("/parcel-images/{id}", response_model=schemas.ParcelImageOut)
+@router.put("/parcel-images/{id}", response_model=schemas.ParcelImageOut)
 def update_image(
     id: int,
     updated: schemas.ParcelImageCreate,
@@ -312,7 +318,7 @@ def update_image(
     return obj
 
 
-@app.delete("/parcel-images/{id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/parcel-images/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_image(
     id: int,
     db: Session = Depends(get_db),
@@ -324,3 +330,6 @@ def delete_image(
     db.delete(obj)
     db.commit()
     return JSONResponse(status_code=status.HTTP_204_NO_CONTENT, content=None)
+
+
+app.include_router(router, prefix="/api/v1")

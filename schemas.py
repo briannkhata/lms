@@ -18,8 +18,9 @@ class UserCreate(UserBase):
 class UserOut(UserBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class ParcelTypeBase(BaseModel):
@@ -33,8 +34,9 @@ class ParcelTypeCreate(ParcelTypeBase):
 class ParcelTypeOut(ParcelTypeBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class ParcelBase(BaseModel):
@@ -52,8 +54,9 @@ class ParcelCreate(ParcelBase):
 class ParcelOut(ParcelBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 
 
 class ParcelImageBase(BaseModel):
@@ -68,5 +71,6 @@ class ParcelImageCreate(ParcelImageBase):
 class ParcelImageOut(ParcelImageBase):
     id: int
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }

@@ -1,0 +1,212 @@
+{
+	"/": [
+		"src/routes/+page.ts",
+		"src/routes/+layout.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin": [
+		"src/routes/admin/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/changepassword": [
+		"src/routes/admin/changepassword/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/folders": [
+		"src/routes/admin/folders/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/folders/create": [
+		"src/routes/admin/folders/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/folders/[id]": [
+		"src/routes/admin/folders/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/gradelevels": [
+		"src/routes/admin/gradelevels/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/gradelevels/create": [
+		"src/routes/admin/gradelevels/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/gradelevels/[id]": [
+		"src/routes/admin/gradelevels/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/lessons": [
+		"src/routes/admin/lessons/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/lessons/create": [
+		"src/routes/admin/lessons/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/lessons/info/[id]": [
+		"src/routes/admin/lessons/info/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/lessons/[id]": [
+		"src/routes/admin/lessons/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/payments": [
+		"src/routes/admin/payments/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/plans": [
+		"src/routes/admin/plans/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/plans/create": [
+		"src/routes/admin/plans/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/plans/[id]": [
+		"src/routes/admin/plans/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/profile": [
+		"src/routes/admin/profile/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/subjects": [
+		"src/routes/admin/subjects/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/subjects/create": [
+		"src/routes/admin/subjects/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/subjects/[id]": [
+		"src/routes/admin/subjects/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/subscriptions": [
+		"src/routes/admin/subscriptions/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/subscriptions/create": [
+		"src/routes/admin/subscriptions/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/subscriptions/[id]": [
+		"src/routes/admin/subscriptions/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/users": [
+		"src/routes/admin/users/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/users/create": [
+		"src/routes/admin/users/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/users/info/[id]": [
+		"src/routes/admin/users/info/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/admin/users/[id]": [
+		"src/routes/admin/users/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/login": [
+		"src/routes/login/+page.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/logout": [
+		"src/routes/logout/+server.ts"
+	],
+	"/register": [
+		"src/routes/register/+page.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student": [
+		"src/routes/student/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/changepassword": [
+		"src/routes/student/changepassword/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/folders": [
+		"src/routes/student/folders/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/folders/[id]": [
+		"src/routes/student/folders/[id]/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/lessons": [
+		"src/routes/student/lessons/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/lessons/create": [
+		"src/routes/student/lessons/create/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/lessons/info/[id]": [
+		"src/routes/student/lessons/info/[id]/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/lessons/[id]": [
+		"src/routes/student/lessons/[id]/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/profile": [
+		"src/routes/student/profile/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/subscriptions": [
+		"src/routes/student/subscriptions/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	],
+	"/student/upgradeplan": [
+		"src/routes/student/upgradeplan/+page.server.ts",
+		"src/routes/student/+layout.server.ts",
+		"src/routes/+layout.ts"
+	]
+}

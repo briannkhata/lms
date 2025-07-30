@@ -1,0 +1,39 @@
+{
+  "name": "rest-sveltekit",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^6.0.1",
+    "@sveltejs/kit": "^2.21.4",
+    "@sveltejs/package": "^2.3.11",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.5",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.4.0",
+    "prisma": "^6.9.0",
+    "svelte": "^5.33.19",
+    "svelte-check": "^4.2.1",
+    "tailwindcss": "^4.1.10",
+    "ts-node": "10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "type": "module",
+  "dependencies": {
+    "@prisma/client": "^6.9.0",
+    "@tailwindcss/vite": "^4.1.10",
+    "@zerodevx/svelte-toast": "^0.9.6",
+    "jwt-decode": "^4.0.0"
+  }
+}

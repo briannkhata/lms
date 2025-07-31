@@ -162,7 +162,7 @@
         <textarea
           id="description"
           name="description"
-          rows="4"
+          rows="2"
           placeholder="Additional details about the parcel..."
           class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
         ></textarea>

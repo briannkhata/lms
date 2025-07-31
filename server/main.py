@@ -288,22 +288,22 @@ def delete_parcel(
 # ==== PARCEL IMAGES ====
 @router.post("/parcel-images/")
 def add_image(
-    ParcelID: int = Form(...),
-    Image: UploadFile = File(...),
+    parcel_id: int = Form(...),
+    image: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
     # Generate unique filename
-    file_ext = os.path.splitext(Image.filename)[1]
+    file_ext = os.path.splitext(image.filename)[1]
     filename = f"{uuid.uuid4().hex}{file_ext}"
     file_path = os.path.join(UPLOAD_DIR, filename)
 
     # Save file locally
     with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(Image.file, buffer)
+        shutil.copyfileobj(image.file, buffer)
 
     # Store the relative or full file path in the database
-    obj = models.ParcelImage(ParcelID=ParcelID, Image=file_path)
+    obj = models.ParcelImage(ParcelID=parcel_id, Image=file_path)
     db.add(obj)
     db.commit()
     db.refresh(obj)

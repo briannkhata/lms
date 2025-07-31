@@ -4,7 +4,7 @@
 
   let formElement: HTMLFormElement;
   export let data;
-  const { users, plans, subscription } = data;
+  const { user } = data;
 
   function handleSubmit() {
     return ({ result }) => {
@@ -53,10 +53,10 @@
     <!-- Header -->
     <div class="mb-6">
       <h2 class="text-2xl font-semibold text-gray-900 select-none">
-        Update Subscription
+        Update User
       </h2>
       <p class="text-sm text-gray-500 mt-1">
-        Fill in the details below to assign a subscription to a student.
+        Fill in the details below to update user.
       </p>
       <hr class="mt-5 border-t border-gray-200" />
     </div>
@@ -68,97 +68,109 @@
       bind:this={formElement}
       class="space-y-8"
     >
-      <!-- Student & Plan -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Student -->
-        <input type="hidden" id="id" name="id" bind:value={subscription.id} />
-
-        <div>
-          <label
-            for="user_id"
-            class="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Student <span class="text-red-500">*</span>
-          </label>
-          <select
-            id="user_id"
-            name="user_id"
-            bind:value={subscription.user_id}
-            disabled
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-          >
-            <option disabled selected value="">Select a student</option>
-            {#each users as student}
-              <option value={student.id}>
-                {student.name}
-              </option>
-            {/each}
-          </select>
-        </div>
-
-        <!-- Plan -->
-        <div>
-          <label
-            for="plan_id"
-            class="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Plan <span class="text-red-500">*</span>
-          </label>
-          <select
-            id="plan_id"
-            name="plan_id"
-            bind:value={subscription.plan_id}
-            disabled
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-          >
-            <option disabled selected value="">Select a plan</option>
-            {#each plans as plan}
-              <option value={plan.id}>
-                {plan.title} - {plan.duration} Days
-              </option>
-            {/each}
-          </select>
-        </div>
-      </div>
-
-      <!-- Start Date & Status -->
+      <!-- Name & Username -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label
-            for="start_date"
+            for="name"
             class="block text-sm font-medium text-gray-700 mb-2"
           >
-            Start Date <span class="text-red-500">*</span>
+            Full Name <span class="text-red-500">*</span>
           </label>
           <input
             type="text"
-            id="start_date"
-            name="start_date"
-            disabled
-            bind:value={subscription.start_date}
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+            id="name"
+            name="name"
+            bind:value={user.name}
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
         <div>
           <label
-            for="status"
+            for="username"
             class="block text-sm font-medium text-gray-700 mb-2"
           >
-            Status <span class="text-red-500">*</span>
+            Username <span class="text-red-500">*</span>
           </label>
-          <select
-            id="status"
-            name="status"
-            bind:value={subscription.status}
-            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-          >
-            <option disabled selected value="">Select status</option>
-            <option value={1}>Active</option>
-            <option value={0}>Inactive</option>
-          </select>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            bind:value={user.username}
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
         </div>
       </div>
+
+      <!-- Email & Phone -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div>
+          <label
+            for="email"
+            class="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Email <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            bind:value={user.email}
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div>
+          <label
+            for="phone"
+            class="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Phone <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            bind:value={user.phone}
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+
+        <div>
+          <label
+            for="password"
+            class="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Password <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
+      </div>
+
+      <!-- <div>
+          <label
+            for="role"
+            class="block text-sm font-medium text-gray-700 mb-2"
+          >
+            Role <span class="text-red-500">*</span>
+          </label>
+          <select
+            id="role"
+            name="role"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option disabled selected value="">Select role</option>
+            <option value="superadmin">Super Admin</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+      </div> -->
 
       <!-- Submit -->
       <div class="text-left">
@@ -167,7 +179,7 @@
           class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 border border-indigo-600 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
         >
           <i class="fa-solid fa-save text-sm"></i>
-          Update
+          Update User
         </button>
       </div>
     </form>

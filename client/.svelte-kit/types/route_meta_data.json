@@ -15,6 +15,10 @@
 		"src/routes/admin/parcels/create/+page.server.ts",
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/parcels/info/[id]": [
+		"src/routes/admin/parcels/info/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/admin/parcels/[id]": [
 		"src/routes/admin/parcels/[id]/+page.server.ts",
 		"src/routes/admin/+layout.server.ts"

@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { requireToken } from "$lib/utils/requireToken";
 import type { Actions, ServerLoad } from "@sveltejs/kit";
 import { fail } from "@sveltejs/kit";
 
@@ -10,7 +11,7 @@ interface ParcelResponse {
 
 export const actions = {
   default: async ({ request, cookies }: import('./$types').RequestEvent) => {
-    const token = cookies.get("token");
+    const token = requireToken(cookies);
 
     const formData = await request.formData();
     const name = formData.get("name")?.toString().trim() ?? "";

@@ -30,6 +30,7 @@ class Parcel(Base):
 class ParcelImage(Base):
     __tablename__ = "tblparcelimages"
     id = Column(Integer, primary_key=True, index=True)
-    ParcelID = Column(Integer, ForeignKey("tblparcels.id", ondelete="CASCADE"))
-    Image = Column(String(255))
+    parcel_id = Column(Integer, ForeignKey(
+        "tblparcels.id", ondelete="CASCADE"))
+    image = Column(String(255))
     parcel = relationship("Parcel")

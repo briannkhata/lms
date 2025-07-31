@@ -2,51 +2,29 @@
 import type { PageServerLoad } from "./$types";
 import type { Actions } from "@sveltejs/kit";
 
-import { env } from "$env/dynamic/public";
 import { fetchData } from "$lib/utils/fetchData";
-import { deleteRecord } from "$lib/utils/deleteRecord";
 import { requireToken } from "$lib/utils/requireToken";
-
-const BASE_URL = env.PUBLIC_API_BASE_URL;
-
-interface Plan {
-  id: number;
-  title: string;
-  duration: number;
-}
 
 interface User {
   id: number;
-  first_name: string;
-  last_name: string;
-}
-
-interface Subscription {
-  id: number;
-  start_date: string;
-  end_date: string;
-  plan_id: number;
-  plan?: Plan;
-  user_id: number;
-  user?: User;
-  status: number;
-  created_by?: number;
-  deleted?: number;
-  deleted_at?: string;
-  created_at?: string;
-  updated_at?: string;
+  name: string;
+  username: string;
+  password: string;
+  phone: string;
+  email: string;
+  role: string;
 }
 
 export const load = async ({ cookies }: Parameters<PageServerLoad>[0]) => {
   const token = requireToken(cookies);
 
   try {
-    const [subscriptions] = await Promise.all([
-      await fetchData<Subscription>(`${BASE_URL}/private/subscription`, token),
+    const [users] = await Promise.all([
+      await fetchData<User>(`http://127.0.0.1:8001/api/v1/users`, token),
     ]);
 
     return {
-      subscriptions,
+      users,
     };
   } catch (error) {
     return { subscriptions: null };
@@ -55,12 +33,39 @@ export const load = async ({ cookies }: Parameters<PageServerLoad>[0]) => {
 
 export const actions = {
   deleteRecord: async ({ request, cookies }: import('./$types').RequestEvent) => {
+    const formData = await request.formData();
+    const userId = formData.get("userId")?.toString();
+
+    if (!userId) {
+      return {
+        type: "failure",
+        data: { message: "UserId is required" },
+      };
+    }
+
+    const token = cookies.get("token");
+
     try {
-      const result = await deleteRecord({
-        request,
-        cookies,
-        endpointPath: "private/subscription/delete",
-      });
+      const response = await fetch(
+        `http://127.0.0.1:8001/api/v1/users/${userId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return {
+          type: "failure",
+          data: errorData,
+        };
+      }
+
+      const result = await response.json();
 
       if ("success" in result && !result.success) {
         return {

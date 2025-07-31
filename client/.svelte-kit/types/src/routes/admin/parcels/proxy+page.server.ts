@@ -1,8 +1,8 @@
 // @ts-nocheck
 import type { PageServerLoad } from "./$types";
 import { fetchData } from "$lib/utils/fetchData";
-import { deleteRecord } from "$lib/utils/deleteRecord";
 import type { Actions } from "@sveltejs/kit";
+import { requireToken } from "$lib/utils/requireToken";
 
 export interface Parcel {
   id: number;
@@ -18,7 +18,7 @@ export interface Parcel {
 }
 
 export const load = async ({ cookies }: Parameters<PageServerLoad>[0]) => {
-  const token = cookies.get("token");
+  const token = requireToken(cookies);
 
   if (!token) {
     return { parcels: null };
@@ -37,12 +37,39 @@ export const load = async ({ cookies }: Parameters<PageServerLoad>[0]) => {
 
 export const actions = {
   deleteRecord: async ({ request, cookies }: import('./$types').RequestEvent) => {
+    const formData = await request.formData();
+    const parcelId = formData.get("parcelId")?.toString();
+
+    if (!parcelId) {
+      return {
+        type: "failure",
+        data: { message: "parcelId is required" },
+      };
+    }
+
+    const token = cookies.get("token");
+
     try {
-      const result = await deleteRecord({
-        request,
-        cookies,
-        endpointPath: "/parcel/api/v1/delete",
-      });
+      const response = await fetch(
+        `http://127.0.0.1:8001/api/v1/parcels/${parcelId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        return {
+          type: "failure",
+          data: errorData,
+        };
+      }
+
+      const result = await response.json();
 
       if ("success" in result && !result.success) {
         return {

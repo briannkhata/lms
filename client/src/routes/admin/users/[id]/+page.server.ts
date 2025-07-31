@@ -1,43 +1,23 @@
+import { requireToken } from "$lib/utils/requireToken";
 import type { Actions, ServerLoad } from "@sveltejs/kit";
 import { fail } from "@sveltejs/kit";
-import { env } from "$env/dynamic/public";
-//import { BASE_URL, USERS_URL, PLANS_URL } from "$lib/constants";
 
-const BASE_URL = env.PUBLIC_API_BASE_URL;
-const PLANS_URL = `${BASE_URL}/private/plan`;
-const USERS_URL = `${BASE_URL}/private/user`;
-
-interface User {
+export interface User {
   id: number;
-  first_name: string;
-  last_name: string;
+  name: string;
+  username: string;
+  email?: string;
+  phone?: string;
+  password?: string;
 }
 
-interface Plan {
-  id: number;
-  title: string;
-  duration: number;
-}
-
-interface Subscription {
-  id: number;
-  start_date: string;
-  end_date: string;
-  plan_id: number;
-  plan?: Plan;
-  user_id: number;
-  user?: User;
-  status: string;
-}
-
-interface RequestResponse {
+interface UserResponse {
   success: boolean;
-  msg: string;
+  message: string;
   token?: string;
 }
-
-const fetchWithToken = async (url: string, token: string) => {
-  const res = await fetch(url, {
+async function fetchSingleUser(token: string, id: string): Promise<User> {
+  const res = await fetch(`http://127.0.0.1:8001/api/v1/users/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -45,137 +25,95 @@ const fetchWithToken = async (url: string, token: string) => {
   });
 
   if (!res.ok) {
-    throw new Error(`Fetch error: ${url} - ${res.status} ${res.statusText}`);
+    throw new Error(`Failed to fetch parcel: ${res.status} ${res.statusText}`);
   }
 
-  return res.json();
-};
-
-async function fetchSubscription(
-  token: string,
-  id: string
-): Promise<Subscription> {
-  const json = await fetchWithToken(
-    `${BASE_URL}/private/subscription/${id}`,
-    token
-  );
-
+  const json = await res.json();
   if (!json?.data || typeof json.data !== "object") {
-    throw new Error("Invalid subscription response format");
+    throw new Error("Invalid parcel response format");
   }
 
-  return json.data as Subscription;
-}
-
-async function fetchUsers(token: string): Promise<User[]> {
-  const json = await fetchWithToken(USERS_URL, token);
-
-  if (!json?.data || !Array.isArray(json.data)) {
-    throw new Error("Invalid users response format");
-  }
-
-  return json.data as User[];
-}
-
-async function fetchPlans(token: string): Promise<Plan[]> {
-  const json = await fetchWithToken(PLANS_URL, token);
-
-  if (!json?.data || !Array.isArray(json.data)) {
-    throw new Error("Invalid plans response format");
-  }
-
-  return json.data as Plan[];
+  return json.data;
 }
 
 export const load: ServerLoad = async ({ cookies, params }) => {
-  const token = cookies.get("token");
+  const token = requireToken(cookies);
   const id = params.id;
 
   if (!token) {
     console.warn("No auth token found");
-    return {
-      users: [] as User[],
-      plans: [] as Plan[],
-      subscription: null as Subscription | null,
-    };
+    return { user: null };
   }
 
   try {
-    const [users, plans, subscription] = await Promise.all([
-      fetchUsers(token),
-      fetchPlans(token),
-      fetchSubscription(token, id),
-    ]);
-
-    return { users, plans, subscription };
+    const user = await fetchSingleUser(token, id);
+    return { user };
   } catch (error) {
-    console.error("Failed to load data:", error);
+    console.error("Failed to load user:", error);
     return fail(500, {
-      message: "Failed to load subscription data.",
+      message: "Failed to load user",
     });
   }
 };
 
 export const actions: Actions = {
   default: async ({ request, cookies }) => {
-    const token = cookies.get("token");
-    console.log("Token retrieved:", token ? "[REDACTED]" : "None");
+    const token = requireToken(cookies);
 
     const formData = await request.formData();
-    console.log("Form data received:", Array.from(formData.entries()));
 
-    // Extract and coerce fields
-    const fields = {
-      id: formData.get("id")?.toString() || "",
-      status: parseInt(formData.get("status")?.toString() || ""),
-    };
+    const id = formData.get("id")?.toString() || "";
+    const name = formData.get("name")?.toString().trim() ?? "";
+    const username = formData.get("username")?.toString().trim() ?? "";
+    const password = formData.get("password")?.toString().trim() ?? "";
+    const phone = formData.get("phone")?.toString().trim() ?? "";
+    const email = formData.get("email")?.toString().trim() ?? "";
 
-    console.log("Parsed fields:", fields);
-
-    // Validation
     const errors: Record<string, string> = {};
-    if (!fields.id) errors.id = "Subscription ID is required.";
-    if (isNaN(fields.status)) errors.status = "Status is required.";
+
+    // Validations
+    if (!username) errors.username = "Username is required.";
+    if (!phone) errors.phone = "Phone is required.";
+    if (!email) errors.email = "Email is required.";
 
     if (Object.keys(errors).length > 0) {
-      console.warn("Validation errors found:", errors);
       return fail(400, { errors });
     }
 
-    const payload = {
-      status: fields.status,
+    // Build the payload conditionally
+    const bodyPayload: any = {
+      name,
+      username,
+      phone,
+      email,
     };
-
-    console.log("Prepared payload:", payload);
+    if (password.length > 0) {
+      bodyPayload.password = password;
+    }
 
     try {
-      const userUrl = `${BASE_URL}/private/subscription/updatestatus/${fields.id}`;
-      console.log("Sending PUT request to:", userUrl);
-
-      const res = await fetch(userUrl, {
+      const res = await fetch(`http://127.0.0.1:8001/api/v1/users/${id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(bodyPayload),
       });
 
-      const data: RequestResponse = await res.json();
-      console.log("Response from server:", data);
+      const data: UserResponse = await res.json();
 
       if (!res.ok || data.success === false) {
-        console.error("Updating subscription failed:", data);
+        console.error("Updating user failed:", data);
         return fail(400, {
-          message: data.msg || "Updating subscription failed.",
+          message: data.message || "Updating user failed.",
         });
       }
 
-      console.log("Subscription updated successfully:", data.msg);
       return {
         type: "success",
         success: true,
-        message: data.msg,
+        message: data.message,
       };
     } catch (error) {
       console.error("Connection error:", error);

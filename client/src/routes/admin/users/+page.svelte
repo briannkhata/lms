@@ -1,25 +1,16 @@
 <script lang="ts">
+  import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
-  import ConfirmDeleteModal from "$lib/components/ConfirmDeleteModal.svelte";
-  import { formatDate } from "$lib/utils/formatDate.js";
 
   const { data } = $props();
-  let showModal = $state(false);
-  let itemToDelete = null;
-
-  function openDeleteModal(item: any) {
-    itemToDelete = item;
-    showModal = true;
-  }
-
-  function closeModal() {
-    console.log("Closing modal");
-    showModal = false;
-    itemToDelete = null;
-  }
 
   function editRecord(id: string) {
-    goto(`/admin/subscriptions/${id}`);
+    goto(`/admin/users/${id}`);
+  }
+  function confirmDelete(event) {
+    if (!confirm("Are you sure you want to delete this parcel?")) {
+      event.preventDefault();
+    }
   }
 </script>
 
@@ -34,26 +25,26 @@
       <h2
         class="text-3xl font-semibold text-gray-900 tracking-tight select-none"
       >
-        Subscriptions
+        Users
       </h2>
       <a
-        href="/admin/subscriptions/create"
+        href="/admin/users/create"
         class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 shadow-sm transition"
       >
         <i class="fa-solid fa-plus"></i>
-        <span>Create Subscription</span>
+        <span>Create User</span>
       </a>
     </div>
 
     <!-- Table -->
     <div class="overflow-x-auto px-6 pt-4 pb-6">
-      {#if Array.isArray(data.subscriptions) && data.subscriptions.length > 0}
+      {#if Array.isArray(data.users) && data.users.length > 0}
         <table class="w-full min-w-[1000px] text-sm text-gray-800">
           <thead
             class="text-xs uppercase text-gray-500 bg-gray-50 border-b border-gray-200"
           >
             <tr>
-              {#each ["#", "Plan", "Start Date", "Expire Date", "Student", "Status", "Actions"] as header}
+              {#each ["#", "Name", "Username", "Phone", "Email", "Role", "Actions"] as header}
                 <th
                   class="px-4 py-3 text-left tracking-wide font-semibold whitespace-nowrap"
                 >
@@ -63,46 +54,50 @@
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-gray-100">
-            {#each data.subscriptions as subscription, index}
+            {#each data.users as user, index}
               <tr class="group hover:bg-gray-50 transition align-top">
                 <td class="px-4 py-3 font-medium whitespace-nowrap">
                   {index + 1}
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  {subscription.plan.title} ~ {subscription.plan.duration} Days
+                  {user.name}
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  {formatDate(subscription.start_date)}
+                  {user.username}
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  {formatDate(subscription.end_date)}
+                  {user.phone}
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  {subscription.user.name}
+                  {user.email}
                 </td>
                 <td class="px-4 py-3 whitespace-nowrap">
-                  <span
-                    class={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
-                      subscription.status.toString() === "1"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {subscription.status.toString() === "1"
-                      ? "Active"
-                      : "Inactive"}
-                  </span>
+                  {user.role}
                 </td>
+
                 <td class="px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-2">
                     <button
-                      onclick={() => editRecord(subscription.id.toString())}
-                      class="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center rounded-full focus:ring-2 focus:ring-blue-400 transition"
-                      aria-label="Deactivate Subscription"
-                      title="Deactivate Subscription"
+                      onclick={() => editRecord(user?.id.toString())}
+                      class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-md"
                     >
-                      <i class="fa-solid fa-lock text-xs"></i>
+                      Edit
                     </button>
+
+                    <form
+                      method="POST"
+                      action="?/deleteRecord"
+                      use:enhance
+                      onsubmit={confirmDelete}
+                    >
+                      <input type="hidden" name="parcelId" value={user.id} />
+                      <button
+                        type="submit"
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
+                      >
+                        Delete
+                      </button>
+                    </form>
                   </div>
                 </td>
               </tr>
@@ -113,17 +108,9 @@
         <div
           class="px-6 py-5 mt-4 text-sm text-yellow-800 bg-yellow-50 border border-yellow-300 rounded-md"
         >
-          No subscriptions found.
+          No users found.
         </div>
       {/if}
     </div>
   </div>
 </section>
-
-{#if showModal}
-  <ConfirmDeleteModal
-    show={showModal}
-    item={itemToDelete}
-    on:cancel={closeModal}
-  />
-{/if}

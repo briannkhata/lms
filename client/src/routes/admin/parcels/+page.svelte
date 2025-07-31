@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
 
   let { data } = $props();
@@ -7,9 +8,15 @@
     goto(`/admin/parcels/${String(id)}`);
   };
 
-  const deleteRecord = (id: string) => {
-    goto(`/admin/parcels/${String(id)}`);
+  const viewRecord = (id: string) => {
+    goto(`/admin/parcels/info/${String(id)}`);
   };
+
+  function confirmDelete(event) {
+    if (!confirm("Are you sure you want to delete this parcel?")) {
+      event.preventDefault();
+    }
+  }
 </script>
 
 <section class="max-w-[1400px] mx-auto px-4 sm:px-6 py-10 bg-gray-50">
@@ -92,12 +99,26 @@
                     >
                       Edit
                     </button>
-                    <button
-                      onclick={() => deleteRecord(parcel?.id.toString())}
-                      class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
+                    <!-- <button
+                      onclick={() => viewRecord(parcel?.id.toString())}
+                      class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md"
                     >
-                      Delete
-                    </button>
+                      Details
+                    </button> -->
+                    <form
+                      method="POST"
+                      action="?/deleteRecord"
+                      use:enhance
+                      onsubmit={confirmDelete}
+                    >
+                      <input type="hidden" name="parcelId" value={parcel.id} />
+                      <button
+                        type="submit"
+                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
+                      >
+                        Delete
+                      </button>
+                    </form>
                   </div>
                 </td>
               </tr>

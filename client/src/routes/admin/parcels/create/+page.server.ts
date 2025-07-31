@@ -1,3 +1,4 @@
+import { requireToken } from "$lib/utils/requireToken";
 import type { Actions, ServerLoad } from "@sveltejs/kit";
 import { fail } from "@sveltejs/kit";
 
@@ -9,7 +10,7 @@ interface ParcelResponse {
 
 export const actions: Actions = {
   default: async ({ request, cookies }) => {
-    const token = cookies.get("token");
+    const token = requireToken(cookies);
 
     const formData = await request.formData();
     const name = formData.get("name")?.toString().trim() ?? "";

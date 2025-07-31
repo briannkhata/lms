@@ -7,6 +7,30 @@
 		"src/routes/admin/+layout.server.ts",
 		"src/routes/admin/+layout.server.ts"
 	],
+	"/admin/parcels": [
+		"src/routes/admin/parcels/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/parcels/create": [
+		"src/routes/admin/parcels/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/parcels/[id]": [
+		"src/routes/admin/parcels/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/users": [
+		"src/routes/admin/users/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/users/create": [
+		"src/routes/admin/users/create/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
+	"/admin/users/[id]": [
+		"src/routes/admin/users/[id]/+page.server.ts",
+		"src/routes/admin/+layout.server.ts"
+	],
 	"/logout": [
 		"src/routes/logout/+server.ts"
 	]

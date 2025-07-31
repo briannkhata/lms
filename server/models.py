@@ -10,14 +10,7 @@ class User(Base):
     username = Column(String(50), nullable=False, unique=True)
     password = Column(String(255), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
-    role = Column(String(100), nullable=False, unique=True)
-    IsOwner = Column(Boolean, default=False)
-
-
-class ParcelType(Base):
-    __tablename__ = "tblparceltypes"
-    id = Column(Integer, primary_key=True, index=True)
-    ParcelType = Column(String(100), nullable=False)
+    role = Column(String(255), nullable=False)
 
 
 class Parcel(Base):
@@ -27,9 +20,11 @@ class Parcel(Base):
     location = Column(String(255))
     coordinates = Column(String(255))
     description = Column(Text)
-    ParcelTypeId = Column(Integer, ForeignKey(
-        "tblparceltypes.id", ondelete="SET NULL"))
-    parcel_type = relationship("ParcelType")
+    parceltype = Column(Text)
+    o_name = Column(Text)
+    o_phone = Column(Text)
+    o_email = Column(Text)
+    o_address = Column(Text)
 
 
 class ParcelImage(Base):

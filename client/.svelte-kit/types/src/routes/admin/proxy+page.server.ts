@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { jwtDecode } from "jwt-decode";
 import type { PageServerLoad } from "./$types";
+import { redirect, type Actions } from "@sveltejs/kit";
 
 interface DecodedToken {
   sub: string;
@@ -33,24 +34,12 @@ export const load = async ({ cookies }: Parameters<PageServerLoad>[0]) => {
   }
 };
 
-// export const actions: Actions = {
-//   logout: async ({ cookies, fetch }) => {
-//     const token = cookies.get("token");
+export const actions = {
+  logout: async ({ cookies }: import('./$types').RequestEvent) => {
+    const token = cookies.get("token");
 
-//     if (token) {
-//       try {
-//         await fetch(LOGOUT_URL, {
-//           method: "POST",
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//           },
-//         });
-//       } catch (err) {
-//         console.error("Failed to notify server:", err);
-//       }
-//     }
-
-//     cookies.delete("token", { path: "/" });
-//     throw redirect(302, "/");
-//   },
-// };
+    cookies.delete("token", { path: "/" });
+    throw redirect(302, "/");
+  },
+};
+;null as any as Actions;

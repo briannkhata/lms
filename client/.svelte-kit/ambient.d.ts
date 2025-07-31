@@ -45,9 +45,7 @@ declare module '$env/static/private' {
 	export const DEFLOGDIR: string;
 	export const DriverData: string;
 	export const EDITOR: string;
-	export const EFC_16524_1592913036: string;
-	export const FPS_BROWSER_APP_PROFILE_STRING: string;
-	export const FPS_BROWSER_USER_PROFILE_STRING: string;
+	export const EFC_59688_1592913036: string;
 	export const GIT_ASKPASS: string;
 	export const GOPATH: string;
 	export const HOME: string;
@@ -119,8 +117,6 @@ declare module '$env/static/private' {
 	export const USERNAME: string;
 	export const USERPROFILE: string;
 	export const VBOX_MSI_INSTALL_PATH: string;
-	export const VIRTUAL_ENV: string;
-	export const VIRTUAL_ENV_PROMPT: string;
 	export const VS90COMNTOOLS: string;
 	export const VSCODE_DEBUGPY_ADAPTER_ENDPOINTS: string;
 	export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
@@ -130,8 +126,6 @@ declare module '$env/static/private' {
 	export const VSCODE_INJECTION: string;
 	export const windir: string;
 	export const ZES_ENABLE_SYSMAN: string;
-	export const _OLD_VIRTUAL_PATH: string;
-	export const _OLD_VIRTUAL_PROMPT: string;
 }
 
 /**
@@ -182,9 +176,7 @@ declare module '$env/dynamic/private' {
 		DEFLOGDIR: string;
 		DriverData: string;
 		EDITOR: string;
-		EFC_16524_1592913036: string;
-		FPS_BROWSER_APP_PROFILE_STRING: string;
-		FPS_BROWSER_USER_PROFILE_STRING: string;
+		EFC_59688_1592913036: string;
 		GIT_ASKPASS: string;
 		GOPATH: string;
 		HOME: string;
@@ -256,8 +248,6 @@ declare module '$env/dynamic/private' {
 		USERNAME: string;
 		USERPROFILE: string;
 		VBOX_MSI_INSTALL_PATH: string;
-		VIRTUAL_ENV: string;
-		VIRTUAL_ENV_PROMPT: string;
 		VS90COMNTOOLS: string;
 		VSCODE_DEBUGPY_ADAPTER_ENDPOINTS: string;
 		VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
@@ -267,8 +257,6 @@ declare module '$env/dynamic/private' {
 		VSCODE_INJECTION: string;
 		windir: string;
 		ZES_ENABLE_SYSMAN: string;
-		_OLD_VIRTUAL_PATH: string;
-		_OLD_VIRTUAL_PROMPT: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

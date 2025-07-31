@@ -5,14 +5,26 @@ export const nodes = [
 	() => import('./nodes/1'),
 	() => import('./nodes/2'),
 	() => import('./nodes/3'),
-	() => import('./nodes/4')
+	() => import('./nodes/4'),
+	() => import('./nodes/5'),
+	() => import('./nodes/6'),
+	() => import('./nodes/7'),
+	() => import('./nodes/8'),
+	() => import('./nodes/9'),
+	() => import('./nodes/10')
 ];
 
 export const server_loads = [2];
 
 export const dictionary = {
 		"/": [~3],
-		"/admin": [~4,[2]]
+		"/admin": [~4,[2]],
+		"/admin/parcels": [~5,[2]],
+		"/admin/parcels/create": [~6,[2]],
+		"/admin/parcels/[id]": [~7,[2]],
+		"/admin/users": [~8,[2]],
+		"/admin/users/create": [~9,[2]],
+		"/admin/users/[id]": [~10,[2]]
 	};
 
 export const hooks = {

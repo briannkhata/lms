@@ -130,7 +130,7 @@ def list_users(
     users = db.query(models.User).all()
     return {
         "message": f"{len(users)} users found",
-        "users": [schemas.UserOut.from_orm(u).dict() for u in users]
+        "data": [schemas.UserOut.from_orm(u).dict() for u in users]
     }
 
 
@@ -145,7 +145,7 @@ def get_user(
         raise HTTPException(status_code=404, detail="User not found")
     return {
         "message": "User retrieved successfully",
-        "user": schemas.UserOut.from_orm(user).dict()
+        "data": schemas.UserOut.from_orm(user).dict()
     }
 
 
@@ -170,7 +170,7 @@ def update_user(
         status_code=status.HTTP_200_OK,
         content={
             "message": "User updated successfully",
-            "user": schemas.UserOut.from_orm(user).dict()
+            "data": schemas.UserOut.from_orm(user).dict()
         }
     )
 
@@ -192,99 +192,9 @@ def delete_user(
         content={"message": "User deleted successfully"}
     )
 
-# ==== PARCEL TYPES ====
-
-
-@router.post("/parcel-types/")
-def create_parcel_type(
-    pt: schemas.ParcelTypeCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    # Check for duplicate ParcelType (case-insensitive)
-    existing = db.query(models.ParcelType).filter(
-        func.lower(models.ParcelType.ParcelType) == pt.ParcelType.lower()
-    ).first()
-
-    if existing:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Parcel type with this name already exists."
-        )
-
-    obj = models.ParcelType(**pt.dict())
-    db.add(obj)
-    db.commit()
-    db.refresh(obj)
-
-    return {
-        "message": "Parcel type created successfully",
-        "parcel_type": schemas.ParcelTypeOut.from_orm(obj)
-    }
-
-
-@router.get("/parcel-types/")
-def get_parcel_types(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    types = db.query(models.ParcelType).all()
-    return {
-        "message": f"{len(types)} parcel types found",
-        "parcel_types": [schemas.ParcelTypeOut.from_orm(pt) for pt in types]
-    }
-
-
-@router.get("/parcel-types/{id}")
-def get_parcel_type(
-    id: int,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    pt = db.query(models.ParcelType).get(id)
-    if not pt:
-        raise HTTPException(status_code=404, detail="ParcelType not found")
-    return {
-        "message": "Parcel type retrieved",
-        "parcel_type": schemas.ParcelTypeOut.from_orm(pt)
-    }
-
-
-@router.put("/parcel-types/{id}")
-def update_parcel_type(
-    id: int,
-    updated: schemas.ParcelTypeCreate,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    pt = db.query(models.ParcelType).get(id)
-    if not pt:
-        raise HTTPException(status_code=404, detail="ParcelType not found")
-    for key, value in updated.dict().items():
-        setattr(pt, key, value)
-    db.commit()
-    db.refresh(pt)
-    return {
-        "message": "Parcel type updated successfully",
-        "parcel_type": schemas.ParcelTypeOut.from_orm(pt)
-    }
-
-
-@router.delete("/parcel-types/{id}")
-def delete_parcel_type(
-    id: int,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(get_current_user)
-):
-    pt = db.query(models.ParcelType).get(id)
-    if not pt:
-        raise HTTPException(status_code=404, detail="ParcelType not found")
-    db.delete(pt)
-    db.commit()
-    return {"message": "Parcel type deleted successfully"}
-
-
 # ==== PARCELS ====
+
+
 @router.post("/parcels/")
 def create_parcel(
     parcel: schemas.ParcelCreate,
@@ -310,7 +220,7 @@ def create_parcel(
 
     return {
         "message": "Parcel created successfully",
-        "parcel": schemas.ParcelOut.from_orm(obj)
+        "data": schemas.ParcelOut.from_orm(obj)
     }
 
 
@@ -322,7 +232,7 @@ def list_parcels(
     parcels = db.query(models.Parcel).all()
     return {
         "message": f"{len(parcels)} parcels found",
-        "parcels": [schemas.ParcelOut.from_orm(p) for p in parcels]
+        "data": [schemas.ParcelOut.from_orm(p) for p in parcels]
     }
 
 
@@ -337,7 +247,7 @@ def get_parcel(
         raise HTTPException(status_code=404, detail="Parcel not found")
     return {
         "message": "Parcel retrieved successfully",
-        "parcel": schemas.ParcelOut.from_orm(obj)
+        "data": schemas.ParcelOut.from_orm(obj)
     }
 
 
@@ -357,7 +267,7 @@ def update_parcel(
     db.refresh(obj)
     return {
         "message": "Parcel updated successfully",
-        "parcel": schemas.ParcelOut.from_orm(obj)
+        "data": schemas.ParcelOut.from_orm(obj)
     }
 
 
@@ -400,7 +310,7 @@ def add_image(
 
     return {
         "message": "Parcel image added successfully",
-        "image": schemas.ParcelImageOut.from_orm(obj)
+        "data": schemas.ParcelImageOut.from_orm(obj)
     }
 
 
@@ -412,7 +322,7 @@ def list_images(
     images = db.query(models.ParcelImage).all()
     return {
         "message": f"{len(images)} images found",
-        "images": [schemas.ParcelImageOut.from_orm(i) for i in images]
+        "data": [schemas.ParcelImageOut.from_orm(i) for i in images]
     }
 
 
@@ -427,7 +337,7 @@ def get_image(
         raise HTTPException(status_code=404, detail="ParcelImage not found")
     return {
         "message": "Parcel image retrieved successfully",
-        "image": schemas.ParcelImageOut.from_orm(obj)
+        "data": schemas.ParcelImageOut.from_orm(obj)
     }
 
 

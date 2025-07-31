@@ -72,9 +72,6 @@
       >
         <a href="/admin" class="hover:text-indigo-600 transition">Dashboard</a>
 
-        <a href="/admin/parceltypes" class="hover:text-indigo-600 transition"
-          >Parcel Types</a
-        >
         <a href="/admin/parcels" class="hover:text-indigo-600 transition"
           >Parcels</a
         >
@@ -135,12 +132,6 @@
             >
           </li>
 
-          <li>
-            <a
-              href="/admin/parceltypes"
-              class="block py-1 hover:text-indigo-600">Parcel Types</a
-            >
-          </li>
           <li>
             <a href="/admin/parcels" class="block py-1 hover:text-indigo-600"
               >Parcels</a

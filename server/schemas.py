@@ -2,13 +2,13 @@ from pydantic import BaseModel
 from typing import Optional
 
 
+# === USER MODELS ===
 class UserBase(BaseModel):
     name: str
     username: str
     password: str
     email: str
     role: Optional[str] = None
-    IsOwner: Optional[bool] = False
 
 
 class UserCreate(UserBase):
@@ -23,8 +23,9 @@ class UserOut(UserBase):
     }
 
 
+# === PARCEL TYPE MODELS ===
 class ParcelTypeBase(BaseModel):
-    ParcelType: str
+    parcel_type: str
 
 
 class ParcelTypeCreate(ParcelTypeBase):
@@ -39,12 +40,17 @@ class ParcelTypeOut(ParcelTypeBase):
     }
 
 
+# === PARCEL MODELS ===
 class ParcelBase(BaseModel):
     name: str
     location: Optional[str] = None
     coordinates: Optional[str] = None
     description: Optional[str] = None
-    ParcelTypeId: Optional[int]
+    parceltype: Optional[str] = None
+    o_name: Optional[str] = None
+    o_phone: Optional[str] = None
+    o_email: Optional[str] = None
+    o_address: Optional[str] = None
 
 
 class ParcelCreate(ParcelBase):
@@ -59,9 +65,10 @@ class ParcelOut(ParcelBase):
     }
 
 
+# === PARCEL IMAGE MODELS ===
 class ParcelImageBase(BaseModel):
-    ParcelID: int
-    Image: str
+    parcel_id: int
+    image: str
 
 
 class ParcelImageCreate(ParcelImageBase):

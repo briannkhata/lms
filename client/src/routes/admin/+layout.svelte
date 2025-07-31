@@ -26,14 +26,6 @@
     });
   };
 
-  // const changePassword = () => {
-  //   goto("/admin/changepassword");
-  // };
-
-  // const viewProfile = () => {
-  //   goto("/admin/profile");
-  // };
-
   function clickOutside(node: HTMLElement) {
     const handleClick = (event: MouseEvent) => {
       if (!node.contains(event.target as Node)) {
@@ -49,6 +41,8 @@
       },
     };
   }
+
+  console.log(user);
 </script>
 
 <div id="app" class="flex flex-col min-h-screen bg-gray-50">

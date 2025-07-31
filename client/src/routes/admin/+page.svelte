@@ -1,54 +1,10 @@
 <script lang="ts">
   export let data;
-  /*
-  // const {
-  //   gradeLevels,
-  //   plans,
-  //   students,
-  //   teachers,
-  //   lessons,
-  //   subjects,
-  //   subscriptions,
-  //   expiredsubscriptions,
-  //   expiringsubscriptions,
-  //   loggedinStudents,
-  // } = data;
 
-  // const gradeLevelCount = Array.isArray(gradeLevels) ? gradeLevels.length : 0;
-  // const planCount = Array.isArray(plans) ? plans.length : 0;
-  // const studentCount = Array.isArray(students)
-  //   ? students.length
-  //   : students
-  //     ? 1
-  //     : 0;
-  // const teacherCount = Array.isArray(teachers)
-  //   ? teachers.length
-  //   : teachers
-  //     ? 1
-  //     : 0;
-  // const lessonCount = Array.isArray(lessons) ? lessons.length : 0;
-  // const subjectCount = Array.isArray(subjects) ? subjects.length : 0;
-  // const subscriptionsCount = Array.isArray(subscriptions)
-  //   ? subscriptions.length
-  //   : subscriptions
-  //     ? 1
-  //     : 0;
-  // const expiredsubscriptionsCount = Array.isArray(expiredsubscriptions)
-  //   ? expiredsubscriptions.length
-  //   : expiredsubscriptions
-  //     ? 1
-  //     : 0;
-  // const expiringsubscriptionsCount = Array.isArray(expiringsubscriptions)
-  //   ? expiringsubscriptions.length
-  //   : expiringsubscriptions
-  //     ? 1
-  //     : 0;
-  // const loggedinStudentsCount = Array.isArray(loggedinStudents)
-  //   ? loggedinStudents.length
-  //   : loggedinStudents
-  //     ? 1
-  //     : 0;
-  */
+  const { parcels, users } = data;
+
+  const parcelCount = Array.isArray(parcels) ? parcels.length : 0;
+  const userCount = Array.isArray(users) ? users.length : 0;
 </script>
 
 <main class="flex-grow w-full max-w-[1400px] mx-auto px-4 sm:px-6 pt-4 pb-10">
@@ -63,7 +19,7 @@
       class="block bg-white shadow-md rounded-2xl p-6 transition hover:shadow-lg hover:bg-green-50"
     >
       <h2 class="text-lg font-semibold text-gray-700">Parcels</h2>
-      <p class="text-3xl font-bold text-green-600 mt-2">58</p>
+      <p class="text-3xl font-bold text-green-600 mt-2">{parcelCount}</p>
       <!-- Replace with dynamic count -->
     </a>
 
@@ -73,7 +29,7 @@
       class="block bg-white shadow-md rounded-2xl p-6 transition hover:shadow-lg hover:bg-purple-50"
     >
       <h2 class="text-lg font-semibold text-gray-700">Users</h2>
-      <p class="text-3xl font-bold text-purple-600 mt-2">27</p>
+      <p class="text-3xl font-bold text-purple-600 mt-2">{userCount}</p>
       <!-- Replace with dynamic count -->
     </a>
   </div>

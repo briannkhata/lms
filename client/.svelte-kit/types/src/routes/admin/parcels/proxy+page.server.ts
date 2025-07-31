@@ -20,10 +20,6 @@ export interface Parcel {
 export const load = async ({ cookies }: Parameters<PageServerLoad>[0]) => {
   const token = requireToken(cookies);
 
-  if (!token) {
-    return { parcels: null };
-  }
-
   try {
     const [parcels] = await Promise.all([
       fetchData<Parcel[]>(`http://127.0.0.1:8001/api/v1/parcels`, token),

@@ -7,7 +7,7 @@ export interface User {
   name: string;
   username: string;
   email?: string;
-  phone?: string;
+  //phone?: string;
   password?: string;
 }
 
@@ -66,14 +66,15 @@ export const actions: Actions = {
     const name = formData.get("name")?.toString().trim() ?? "";
     const username = formData.get("username")?.toString().trim() ?? "";
     const password = formData.get("password")?.toString().trim() ?? "";
-    const phone = formData.get("phone")?.toString().trim() ?? "";
+    //const phone = formData.get("phone")?.toString().trim() ?? "";
     const email = formData.get("email")?.toString().trim() ?? "";
+    const role = "admin";
 
     const errors: Record<string, string> = {};
 
     // Validations
     if (!username) errors.username = "Username is required.";
-    if (!phone) errors.phone = "Phone is required.";
+    //if (!phone) errors.phone = "Phone is required.";
     if (!email) errors.email = "Email is required.";
 
     if (Object.keys(errors).length > 0) {
@@ -84,7 +85,8 @@ export const actions: Actions = {
     const bodyPayload: any = {
       name,
       username,
-      phone,
+      //phone,
+      role,
       email,
     };
     if (password.length > 0) {

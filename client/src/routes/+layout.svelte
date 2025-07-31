@@ -15,30 +15,8 @@
   import { page } from "$app/stores";
   import { derived } from "svelte/store";
 
-
-
-  const isHomePage = derived(page, ($page) =>
-    ["/"].includes($page.url.pathname)
-  );
-
-  //export let data;
   const { user } = data;
 </script>
 
-<!-- {#if $isHomePage}
-  <TopMenu {data} />
-{/if} -->
-
 <SvelteToast {options} />
 <slot />
-{#if $isHomePage}
-  <!-- <footer
-    class="bg-white border-t border-gray-200 text-gray-700 py-6 select-none"
-  >
-    <div
-      class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-md font-medium"
-    >
-      <p>&copy; 2025 Foxuls Academy. Built for everyone.</p>
-    </div>
-  </footer> -->
-{/if}

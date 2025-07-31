@@ -161,8 +161,11 @@ def update_user(
         raise HTTPException(status_code=404, detail="User not found")
 
     for key, value in updated.dict().items():
-        setattr(user, key, hash_password(value)
-                if key == "password" else value)
+        if key == "password":
+            if value:  # Only hash and update if password is not empty
+                setattr(user, key, hash_password(value))
+        else:
+            setattr(user, key, value)
 
     db.commit()
     db.refresh(user)

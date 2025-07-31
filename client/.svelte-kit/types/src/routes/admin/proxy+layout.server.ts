@@ -2,28 +2,30 @@
 import { jwtDecode } from "jwt-decode";
 import type { LayoutServerLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
+import { requireToken } from "$lib/utils/requireToken";
+import { fetchData } from "$lib/utils/fetchData";
 
-interface DecodedToken {
-  sub: string;
-  username: string;
+export interface Parcel {
+  id: number;
   name: string;
-  role: string;
-  exp: number;
+}
+
+export interface User {
+  id: number;
+  name: string;
 }
 
 export const load = async ({ cookies }: Parameters<LayoutServerLoad>[0]) => {
-  const token = cookies.get("token");
-  if (!token) throw redirect(302, "/");
+  const token = requireToken(cookies);
 
   try {
-    const decoded: DecodedToken = jwtDecode(token);
-    const now = Math.floor(Date.now() / 1000);
-    if (decoded.exp && decoded.exp < now) {
-      throw redirect(302, "/");
-    }
+    const [parcels, users] = await Promise.all([
+      fetchData<Parcel[]>(`http://127.0.0.1:8001/api/v1/parcels`, token),
+      fetchData<User[]>(`http://127.0.0.1:8001/api/v1/users`, token),
+    ]);
 
-    return { user: decoded };
+    return { parcels, users };
   } catch (error) {
-    throw redirect(302, "/");
+    return { parcels: [], user: [] };
   }
 };

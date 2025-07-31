@@ -155,7 +155,7 @@
           </div>
         </div>
         <!-- 📸 Add Images Button -->
-        <div class="text-right">
+        <!-- <div class="text-right">
           <button
             onclick={() => (showImageModal = true)}
             class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 border border-blue-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
@@ -163,7 +163,7 @@
             <i class="fa-solid fa-image"></i>
             Add Images
           </button>
-        </div>
+        </div> -->
       </div>
     {:else}
       <!-- Fallback -->

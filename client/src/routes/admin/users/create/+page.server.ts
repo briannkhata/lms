@@ -17,7 +17,7 @@ export const actions: Actions = {
     const name = formData.get("name")?.toString().trim() ?? "";
     const username = formData.get("username")?.toString().trim() ?? "";
     const password = formData.get("password")?.toString().trim() ?? "";
-    const phone = formData.get("phone")?.toString().trim() ?? "";
+    //const phone = formData.get("phone")?.toString().trim() ?? "";
     const email = formData.get("email")?.toString().trim() ?? "";
     const role = "admin";
 
@@ -25,7 +25,7 @@ export const actions: Actions = {
       name,
       username,
       password,
-      phone,
+      //phone,
       email,
       role,
     };
@@ -35,7 +35,7 @@ export const actions: Actions = {
     if (!name) errors.name = "Name is required.";
     if (!username) errors.username = "Username is required.";
     if (!password) errors.password = "Password is required.";
-    if (!phone) errors.phone = "Phone number is required.";
+    //if (!phone) errors.phone = "Phone number is required.";
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = "Valid email is required.";
     }

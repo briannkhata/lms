@@ -89,7 +89,7 @@
               class="flex items-center gap-1 hover:text-indigo-600 transition"
             >
               <i class="fa-solid fa-user-circle text-lg"></i>
-              {user.name} - {user.role}
+              {user.name}
 
               <i class="fa-solid fa-caret-down text-xs"></i>
             </button>

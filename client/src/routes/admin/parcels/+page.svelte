@@ -49,7 +49,7 @@
             class="text-xs uppercase text-gray-500 bg-gray-50 border-b border-gray-200"
           >
             <tr>
-              {#each ["#", "Name", "Location", "Coordinates", "Description", "Parcel Type", "Owner Name", "Owner Phone", "Owner Email", "Owner Address", "Actions"] as header}
+              {#each ["#", "Name", "Description", "Parcel Type", "Owner Name", "Actions"] as header}
                 <th
                   class="px-4 py-3 text-left tracking-wide font-semibold whitespace-nowrap"
                 >
@@ -67,12 +67,7 @@
                 <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
                   >{parcel.name}</td
                 >
-                <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
-                  >{parcel.location}</td
-                >
-                <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
-                  >{parcel.coordinates}</td
-                >
+
                 <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
                   >{parcel.description}</td
                 >
@@ -82,15 +77,7 @@
                 <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
                   >{parcel.o_name}</td
                 >
-                <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
-                  >{parcel.o_phone}</td
-                >
-                <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
-                  >{parcel.o_email}</td
-                >
-                <td class="px-4 py-3 text-gray-900 whitespace-nowrap"
-                  >{parcel.o_address}</td
-                >
+
                 <td class="px-4 py-3 whitespace-nowrap">
                   <div class="flex items-center gap-2">
                     <button
@@ -99,12 +86,12 @@
                     >
                       Edit
                     </button>
-                    <!-- <button
+                    <button
                       onclick={() => viewRecord(parcel?.id.toString())}
                       class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-md"
                     >
                       Details
-                    </button> -->
+                    </button>
                     <form
                       method="POST"
                       action="?/deleteRecord"

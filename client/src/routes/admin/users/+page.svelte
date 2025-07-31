@@ -8,7 +8,7 @@
     goto(`/admin/users/${id}`);
   }
   function confirmDelete(event) {
-    if (!confirm("Are you sure you want to delete this parcel?")) {
+    if (!confirm("Are you sure you want to delete this user?")) {
       event.preventDefault();
     }
   }
@@ -44,7 +44,7 @@
             class="text-xs uppercase text-gray-500 bg-gray-50 border-b border-gray-200"
           >
             <tr>
-              {#each ["#", "Name", "Username", "Phone", "Email", "Role", "Actions"] as header}
+              {#each ["#", "Name", "Username", "Email", "Role", "Actions"] as header}
                 <th
                   class="px-4 py-3 text-left tracking-wide font-semibold whitespace-nowrap"
                 >
@@ -65,9 +65,9 @@
                 <td class="px-4 py-3 whitespace-nowrap">
                   {user.username}
                 </td>
-                <td class="px-4 py-3 whitespace-nowrap">
+                <!-- <td class="px-4 py-3 whitespace-nowrap">
                   {user.phone}
-                </td>
+                </td> -->
                 <td class="px-4 py-3 whitespace-nowrap">
                   {user.email}
                 </td>
@@ -90,7 +90,7 @@
                       use:enhance
                       onsubmit={confirmDelete}
                     >
-                      <input type="hidden" name="parcelId" value={user.id} />
+                      <input type="hidden" name="userId" value={user.id} />
                       <button
                         type="submit"
                         class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import TopMenu from "$lib/components/TopMenu.svelte";
   import "../app.css";
   import { SvelteToast } from "@zerodevx/svelte-toast";
   const options = {
@@ -15,17 +14,8 @@
   export let data: any;
   import { page } from "$app/stores";
   import { derived } from "svelte/store";
-  import TopMenuStudent from "$lib/components/TopMenuStudent.svelte";
 
-  $: protectedRoute =
-    $page.url.pathname.startsWith("/admin") ||
-    $page.url.pathname.startsWith("/student") ||
-    $page.url.pathname.startsWith("/login") ||
-    $page.url.pathname.startsWith("/register");
 
-  const isLoginRegister = derived(page, ($page) =>
-    ["/login", "/register"].includes($page.url.pathname)
-  );
 
   const isHomePage = derived(page, ($page) =>
     ["/"].includes($page.url.pathname)

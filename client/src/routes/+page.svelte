@@ -1,5 +1,30 @@
 <script lang="ts">
-  const { data } = $props();
+  import { goto } from "$app/navigation";
+  import { pushToast } from "$lib/utils/pushToast";
+  import { enhance } from "$app/forms";
+
+  export let form: HTMLFormElement;
+  const username = "jo";
+  const password = "jo";
+  const handleSubmit = () => {
+    return ({ result }) => {
+      form.reset();
+
+      if (result.type === "failure") {
+        const { errors, message } = result.data;
+        if (errors) {
+          Object.values(errors).forEach(
+            (val) => val && pushToast(val.toString())
+          );
+        } else {
+          pushToast(message || "Something went wrong.");
+        }
+      }
+      if (result.type === "success") {
+        goto("/admin");
+      }
+    };
+  };
 </script>
 
 <section
@@ -13,7 +38,12 @@
       </p>
     </div>
 
-    <form class="space-y-5">
+    <form
+      method="POST"
+      use:enhance={handleSubmit}
+      bind:this={form}
+      class="space-y-4"
+    >
       <div>
         <label
           for="username"
@@ -23,8 +53,8 @@
           type="text"
           id="username"
           name="username"
+          value={username}
           placeholder="Enter your username"
-          required
           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
@@ -38,8 +68,8 @@
           type="password"
           id="password"
           name="password"
-          required
-          placeholder="••••••••"
+          value={password}
+          placeholder="Enter Password"
           class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>

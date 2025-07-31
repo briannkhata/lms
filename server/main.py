@@ -43,7 +43,7 @@ def get_db():
 
 
 # --- Authentication ---
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 60
 UPLOAD_DIR = "uploads/parcel_images"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
@@ -62,26 +62,27 @@ def index():
 def login(request: LoginRequest = Body(...), db: Session = Depends(get_db)):
     user = authenticate_user(db, request.username, request.password)
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid username or password"
-        )
+        return {
+            "success": False,
+            "message": "Wrong Credentials",
+            "token": ""
+        }
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     token = create_access_token(
-        data={"sub": user.username},
+        data={
+            "sub": user.username,   # standard claim
+            "username": user.username,
+            "name": user.name,
+            "role": user.role
+        },
         expires_delta=access_token_expires
     )
 
     return {
+        "success": True,
+        "message": "Login successful!",
         "token": token,
-        "token_type": "bearer",
-        "user": {
-            "id": user.id,
-            "username": user.username,
-            "name": user.name,
-            "email": user.email
-        }
     }
 
 

@@ -11,18 +11,27 @@ type OutputDataShape<T> = MaybeWithVoid<Omit<App.PageData, RequiredKeys<T>> & Pa
 type EnsureDefined<T> = T extends null | undefined ? {} : T;
 type OptionalUnion<U extends Record<string, any>, A extends keyof U = U extends U ? keyof U : never> = U extends unknown ? { [P in Exclude<A, keyof U>]?: never } & U : never;
 export type Snapshot<T = any> = Kit.Snapshot<T>;
+type PageServerParentData = EnsureDefined<LayoutServerData>;
 type PageParentData = EnsureDefined<LayoutData>;
-type LayoutRouteId = RouteId | "/" | "/admin" | "/admin/changepassword" | "/admin/folders" | "/admin/folders/create" | "/admin/folders/[id]" | "/admin/gradelevels" | "/admin/gradelevels/create" | "/admin/gradelevels/[id]" | "/admin/lessons" | "/admin/lessons/create" | "/admin/lessons/info/[id]" | "/admin/lessons/[id]" | "/admin/payments" | "/admin/plans" | "/admin/plans/create" | "/admin/plans/[id]" | "/admin/profile" | "/admin/subjects" | "/admin/subjects/create" | "/admin/subjects/[id]" | "/admin/subscriptions" | "/admin/subscriptions/create" | "/admin/subscriptions/[id]" | "/admin/users" | "/admin/users/create" | "/admin/users/info/[id]" | "/admin/users/[id]" | "/login" | "/register" | "/student" | "/student/changepassword" | "/student/folders" | "/student/folders/[id]" | "/student/lessons" | "/student/lessons/create" | "/student/lessons/info/[id]" | "/student/lessons/[id]" | "/student/profile" | "/student/subscriptions" | "/student/upgradeplan" | null
-type LayoutParams = RouteParams & { id?: string }
+type LayoutRouteId = RouteId | "/" | "/admin" | null
+type LayoutParams = RouteParams & {  }
 type LayoutParentData = EnsureDefined<{}>;
 
+export type PageServerLoad<OutputData extends OutputDataShape<PageServerParentData> = OutputDataShape<PageServerParentData>> = Kit.ServerLoad<RouteParams, PageServerParentData, OutputData, RouteId>;
+export type PageServerLoadEvent = Parameters<PageServerLoad>[0];
+type ExcludeActionFailure<T> = T extends Kit.ActionFailure<any> ? never : T extends void ? never : T;
+type ActionsSuccess<T extends Record<string, (...args: any) => any>> = { [Key in keyof T]: ExcludeActionFailure<Awaited<ReturnType<T[Key]>>>; }[keyof T];
+type ExtractActionFailure<T> = T extends Kit.ActionFailure<infer X>	? X extends void ? never : X : never;
+type ActionsFailure<T extends Record<string, (...args: any) => any>> = { [Key in keyof T]: Exclude<ExtractActionFailure<Awaited<ReturnType<T[Key]>>>, void>; }[keyof T];
+type ActionsExport = typeof import('./proxy+page.server.js').actions
+export type SubmitFunction = Kit.SubmitFunction<Expand<ActionsSuccess<ActionsExport>>, Expand<ActionsFailure<ActionsExport>>>
+export type ActionData = Expand<Kit.AwaitedActions<ActionsExport>> | null;
 export type PageServerData = null;
-export type PageLoad<OutputData extends OutputDataShape<PageParentData> = OutputDataShape<PageParentData>> = Kit.Load<RouteParams, PageServerData, PageParentData, OutputData, RouteId>;
-export type PageLoadEvent = Parameters<PageLoad>[0];
-export type PageData = Expand<Omit<PageParentData, keyof Kit.LoadProperties<Awaited<ReturnType<typeof import('./proxy+page.js').load>>>> & OptionalUnion<EnsureDefined<Kit.LoadProperties<Awaited<ReturnType<typeof import('./proxy+page.js').load>>>>>>;
-export type PageProps = { data: PageData }
+export type PageData = Expand<PageParentData>;
+export type Action<OutputData extends Record<string, any> | void = Record<string, any> | void> = Kit.Action<RouteParams, OutputData, RouteId>
+export type Actions<OutputData extends Record<string, any> | void = Record<string, any> | void> = Kit.Actions<RouteParams, OutputData, RouteId>
+export type PageProps = { data: PageData; form: ActionData }
 export type LayoutServerData = null;
-export type LayoutLoad<OutputData extends OutputDataShape<LayoutParentData> = OutputDataShape<LayoutParentData>> = Kit.Load<LayoutParams, LayoutServerData, LayoutParentData, OutputData, LayoutRouteId>;
-export type LayoutLoadEvent = Parameters<LayoutLoad>[0];
-export type LayoutData = Expand<Omit<LayoutParentData, keyof Kit.LoadProperties<Awaited<ReturnType<typeof import('./proxy+layout.js').load>>>> & OptionalUnion<EnsureDefined<Kit.LoadProperties<Awaited<ReturnType<typeof import('./proxy+layout.js').load>>>>>>;
+export type LayoutData = Expand<LayoutParentData>;
 export type LayoutProps = { data: LayoutData; children: import("svelte").Snippet }
+export type RequestEvent = Kit.RequestEvent<RouteParams, RouteId>;

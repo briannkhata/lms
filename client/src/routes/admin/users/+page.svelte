@@ -84,20 +84,22 @@
                       Edit
                     </button>
 
-                    <form
-                      method="POST"
-                      action="?/deleteRecord"
-                      use:enhance
-                      onsubmit={confirmDelete}
-                    >
-                      <input type="hidden" name="userId" value={user.id} />
-                      <button
-                        type="submit"
-                        class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
+                    {#if data.user.role == "superadmin"}
+                      <form
+                        method="POST"
+                        action="?/deleteRecord"
+                        use:enhance
+                        onsubmit={confirmDelete}
                       >
-                        Delete
-                      </button>
-                    </form>
+                        <input type="hidden" name="userId" value={user.id} />
+                        <button
+                          type="submit"
+                          class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    {/if}
                   </div>
                 </td>
               </tr>
